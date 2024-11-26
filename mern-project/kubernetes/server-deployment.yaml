@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+  labels:
+    app: mern
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mern
+  template:
+    metadata:
+      labels:
+        app: mern
+    spec:
+      containers:
+      - name: mernserver
+        image: my-server-app
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: servers-secret
+              key: password
+        envFrom:
+        - configMapRef:
+            name: servers-cm     
+        ports:
+        - containerPort: 80

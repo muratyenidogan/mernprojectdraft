@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mymongo:
+    image: mongo
+    container_name: mymongo
+    networks:
+      - mern
+
+  backend:
+    image: my-server-app
+    container_name: backend
+    ports:
+      - "30003:5050" # Yönlendirme: Host 30003 -> Container 5050
+    environment:
+      - ATLAS_URI=mongodb://mymongo # MongoDB'nin adresi
+    depends_on:
+      - mymongo
+    networks:
+      - mern
+
+  frontend:
+    image: my-node-app
+    container_name: frontend
+    ports:
+      - "80:3000" # Yönlendirme: Host 80 -> Container 3000
+    depends_on:
+      - backend
+    networks:
+      - mern
+
+networks:
+  mern:
+    driver: bridge
